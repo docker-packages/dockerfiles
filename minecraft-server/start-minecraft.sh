@@ -197,7 +197,7 @@ case "$TYPE" in
     # normalize on Spigot for operations below
     TYPE=SPIGOT
   ;;
-  
+
   FORGE|forge)
     TYPE=FORGE
     installForge
@@ -362,7 +362,7 @@ if [ ! -e server.properties ]; then
     case ${MODE,,?} in
       0|1|2|3)
         ;;
-      s*)
+      su*)
         MODE=0
         ;;
       c*)
@@ -371,7 +371,7 @@ if [ ! -e server.properties ]; then
       a*)
         MODE=2
         ;;
-      s*)
+      sp*)
         MODE=3
         ;;
       *)
@@ -441,10 +441,16 @@ if [ "$TYPE" = "SPIGOT" ]; then
   fi
 fi
 
+if [[ $CONSOLE = false ]]; then
+  EXTRA_ARGS=--noconsole
+else
+  EXTRA_ARGS=""
+fi
+
 # If we have a bootstrap.txt file... feed that in to the server stdin
 if [ -f /data/bootstrap.txt ];
 then
-    exec java $JVM_OPTS -jar $SERVER "$@" < /data/bootstrap.txt
+    exec java $JVM_OPTS -jar $SERVER "$@" $EXTRA_ARGS < /data/bootstrap.txt
 else
-    exec java $JVM_OPTS -jar $SERVER "$@"
+    exec java $JVM_OPTS -jar $SERVER "$@" $EXTRA_ARGS
 fi

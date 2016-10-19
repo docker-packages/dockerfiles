@@ -14,12 +14,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
   jq \
   && apt-get clean
 
-RUN useradd -M -s /bin/false --uid 1000 minecraft \
+RUN useradd -s /bin/false --uid 1000 minecraft \
   && mkdir /data \
   && mkdir /config \
   && mkdir /mods \
   && mkdir /plugins \
-  && chown minecraft:minecraft /data /config /mods /plugins
+  && mkdir /home/minecraft \
+  && chown minecraft:minecraft /data /config /mods /plugins /home/minecraft
 
 EXPOSE 25565 25575
 
@@ -29,7 +30,7 @@ COPY start-minecraft.sh /start-minecraft
 COPY mcadmin.jq /usr/share
 RUN chmod +x /usr/local/bin/*
 
-VOLUME ["/data","/mods","/config","/plugins"]
+VOLUME ["/data","/mods","/config","/plugins","/home/minecraft"]
 COPY server.properties /tmp/server.properties
 WORKDIR /data
 
@@ -39,4 +40,4 @@ ENV UID=1000 GID=1000 \
     MOTD="A Minecraft Server Powered by Docker" \
     JVM_OPTS="-Xmx1024M -Xms1024M" \
     TYPE=VANILLA VERSION=LATEST FORGEVERSION=RECOMMENDED LEVEL=world PVP=true DIFFICULTY=easy \
-    LEVEL_TYPE=DEFAULT GENERATOR_SETTINGS= WORLD= MODPACK= ONLINE_MODE=TRUE
+    LEVEL_TYPE=DEFAULT GENERATOR_SETTINGS= WORLD= MODPACK= ONLINE_MODE=TRUE CONSOLE=true
