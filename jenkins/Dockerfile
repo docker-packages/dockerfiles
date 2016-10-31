@@ -1,12 +1,17 @@
-FROM java:openjdk-8u72-jdk
+FROM java:openjdk-8u102-jdk
 
 MAINTAINER itzg
 
-ADD download-and-start.sh /download-and-start
+RUN apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  graphviz \
+  && apt-get clean
 
 ENV JENKINS_HOME=/data
 
 VOLUME ["/data", "/root", "/opt/jenkins"]
 EXPOSE 8080 38252
 
-CMD ["/download-and-start"]
+COPY download-and-start.sh /opt/download-and-start
+
+CMD ["/opt/download-and-start"]
